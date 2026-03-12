@@ -8,7 +8,8 @@
 
 body {
   margin: 0;
-  font-family: Inter, 'Segoe UI', Arial, sans-serif;
+  font-family: 'Plus Jakarta Sans', 'Segoe UI', Arial, sans-serif;
+  font-weight: 400;
   background: #f1f5f9;
   color: #0f172a;
 }
