@@ -15,32 +15,34 @@ import {
 
 const transcriptTemplates = {
   'Product Launch Meeting': `Alex: Thanks everyone. We are launching the new productivity app on April 15.
-Priya: The landing page and signup flow are complete.
+Sam: The landing page and signup flow are complete.
 Jordan: Paid ads will begin one week before launch.
-Alex: Great. Priya will finalize QA by April 10.
+Alex: Great. Sam will finalize QA by April 10.
 Jordan: I will share the campaign calendar by Friday.`,
   'Engineering Standup': `Sam: Yesterday I finished the authentication API.
-Mia: I am working on frontend integration and should complete it today.
-Ravi: I fixed the payment webhook bug and added tests.
+Chris: I am working on frontend integration and should complete it today.
+Taylor: I fixed the payment webhook bug and added tests.
 Sam: Blockers?
-Mia: Need clarification on token refresh logic.
+Chris: Need clarification on token refresh logic.
 Sam: I will document that by end of day.`,
-  'Client Meeting': `Nina: The client wants the dashboard redesign by next month.
-Omar: They also asked for CSV export and role-based access.
-Nina: Let's send a revised timeline tomorrow.
-Omar: I will draft scope options and effort estimates.
-Nina: Perfect, I will follow up with the client on Friday.`,
-  'Startup Planning': `Founder: Our goal is to reach 1,000 active users in 90 days.
-Operations: We need a referral program and better onboarding.
-Product: MVP analytics dashboard can be ready in two weeks.
-Founder: Good. Product owns dashboard, Ops owns referral plan.
-Operations: I will share execution milestones by Monday.`,
-  'Marketing Strategy Meeting': `Leah: Q2 focus is brand awareness and webinar signups.
-David: We should run LinkedIn thought-leadership ads.
-Aisha: Email nurture sequence needs updated copy.
-Leah: David owns paid ads plan. Aisha owns email drafts.
-David: I will present budget options in the next meeting.`,
+  'Client Meeting': `Jordan: The client wants the dashboard redesign by next month.
+Tom: They also asked for CSV export and role-based access.
+Jordan: Let's send a revised timeline tomorrow.
+Tom: I will draft scope options and effort estimates by Thursday.
+Jordan: Perfect, I will follow up with the client on Friday.`,
+  'Startup Planning': `Alex: Our goal is to reach 1,000 active users in 90 days.
+Taylor: We need a referral program and better onboarding.
+Chris: MVP analytics dashboard can be ready in two weeks.
+Alex: Good. Chris owns dashboard, Taylor owns referral plan.
+Taylor: I will share execution milestones by Monday.`,
+  'Marketing Strategy Meeting': `Sam: Q2 focus is brand awareness and webinar signups.
+Tony: We should run LinkedIn thought-leadership ads.
+Jim: Email nurture sequence needs updated copy.
+Sam: Tony owns paid ads plan. Jim owns email drafts due Wednesday.
+Tony: I will present budget options in the next meeting on Friday.`,
 };
+
+const defaultTemplateName = 'Product Launch Meeting';
 
 const flowSteps = [
   { label: 'Meeting Transcript Input', icon: FileText },
@@ -68,16 +70,19 @@ function getOwnerInitials(owner) {
 }
 
 function App() {
-  const [transcript, setTranscript] = useState('');
-  const [activeTemplate, setActiveTemplate] = useState('');
+  const [transcript, setTranscript] = useState(transcriptTemplates[defaultTemplateName]);
+  const [activeTemplate, setActiveTemplate] = useState(defaultTemplateName);
   const [result, setResult] = useState(null);
   const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [isApiLoading, setIsApiLoading] = useState(false);
+  const [apiRequestStatus, setApiRequestStatus] = useState('idle');
   const [copyMessage, setCopyMessage] = useState('');
 
   const [showProcessingPanel, setShowProcessingPanel] = useState(false);
   const [currentProcessingStep, setCurrentProcessingStep] = useState(-1);
   const [completedProcessingCount, setCompletedProcessingCount] = useState(0);
+
+  const finalProcessingStepIndex = processingSteps.length - 1;
 
   const parseDeadlineDate = (deadlineText) => {
     const directDate = new Date(deadlineText);
@@ -131,13 +136,13 @@ function App() {
     setShowProcessingPanel(true);
     setCompletedProcessingCount(0);
 
-    for (let i = 0; i < processingSteps.length; i += 1) {
+    for (let i = 0; i < finalProcessingStepIndex; i += 1) {
       setCurrentProcessingStep(i);
       await wait(450 + Math.floor(Math.random() * 151));
       setCompletedProcessingCount(i + 1);
     }
 
-    setCurrentProcessingStep(-1);
+    setCurrentProcessingStep(finalProcessingStepIndex);
   };
 
   const handleGenerate = async () => {
@@ -147,32 +152,53 @@ function App() {
       return;
     }
 
-    setLoading(true);
+    setIsApiLoading(true);
+    setApiRequestStatus('loading');
     setError('');
     setResult(null);
     setCopyMessage('');
+    setShowProcessingPanel(true);
+    setCurrentProcessingStep(-1);
+    setCompletedProcessingCount(0);
 
     try {
+      let responseData = null;
+      let responseError = null;
+
       const fetchPromise = fetch('http://127.0.0.1:8000/analyze-meeting', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ transcript }),
-      }).then(async (response) => {
-        if (!response.ok) throw new Error('Something went wrong while generating the follow-up.');
-        return response.json();
-      });
+      })
+        .then(async (response) => {
+          if (!response.ok) throw new Error('Something went wrong while generating the follow-up.');
+          return response.json();
+        })
+        .then((data) => {
+          responseData = data;
+        })
+        .catch((requestError) => {
+          responseError = requestError;
+        });
 
-      const animationPromise = runProcessingAnimation();
-      const [data] = await Promise.all([fetchPromise, animationPromise]);
-      setResult(data);
-    } catch (requestError) {
-      setError(requestError.message || 'Unable to connect to the backend.');
-    } finally {
-      setShowProcessingPanel(false);
+      await runProcessingAnimation();
+      await fetchPromise;
+
+      if (responseError) throw responseError;
+
+      setApiRequestStatus('success');
+      setCompletedProcessingCount(processingSteps.length);
       setCurrentProcessingStep(-1);
-      setCompletedProcessingCount(0);
-      setLoading(false);
+      await wait(650);
+      setShowProcessingPanel(false);
+      setResult(responseData);
+    } catch (requestError) {
+      setApiRequestStatus('error');
+      setCurrentProcessingStep(finalProcessingStepIndex);
+      setError(requestError.message || 'Unable to connect to the backend.');
     }
+
+    setIsApiLoading(false);
   };
 
   const handleCopyEmail = async () => {
@@ -193,7 +219,7 @@ function App() {
   };
 
   return (
-    <main className="relative min-h-screen overflow-hidden bg-slate-100 px-4 py-10 font-sans md:px-6 lg:py-14">
+    <main className="relative min-h-screen overflow-hidden bg-gradient-to-b from-emerald-50 to-white px-4 py-10 font-sans md:px-6 lg:py-14">
       <div className="pointer-events-none absolute -left-24 top-24 h-72 w-72 rounded-full bg-emerald-200/30 blur-3xl" />
       <div className="pointer-events-none absolute -right-24 bottom-20 h-72 w-72 rounded-full bg-sky-200/30 blur-3xl" />
 
@@ -207,7 +233,7 @@ function App() {
           </p>
         </section>
 
-        <section className="rounded-2xl border border-slate-300/80 bg-white p-6 shadow-soft md:p-7">
+        <section className="rounded-2xl border border-emerald-200/70 bg-white p-6 shadow-soft md:p-7">
           <label htmlFor="transcript" className="mb-3 block text-sm font-semibold text-slate-800">Meeting transcript</label>
 
           <div className="mb-4 flex flex-wrap gap-2">
@@ -220,8 +246,8 @@ function App() {
                   onClick={() => handleTemplateSelect(templateName)}
                   className={`rounded-full px-3.5 py-2 text-xs font-semibold transition-all md:text-sm ${
                     isActive
-                      ? 'bg-gradient-to-r from-emerald-500 to-green-500 text-white shadow-glowGreen'
-                      : 'border border-slate-200 bg-slate-50 text-slate-600 hover:bg-white'
+                      ? 'bg-emerald-500 text-white shadow-md'
+                      : 'border border-slate-200 bg-slate-50 text-slate-600 hover:bg-emerald-50'
                   }`}
                 >
                   {templateName}
@@ -243,23 +269,23 @@ function App() {
           />
 
           <p className="mb-4 text-xs text-slate-500 md:text-sm">
-            This sample transcript is for demo purposes only. You can replace it with your real meeting transcript anytime.
+            This is a demo transcript for testing the AI. You can replace it with your own meeting transcript anytime.
           </p>
 
           <button
             type="button"
-            disabled={loading}
+            disabled={isApiLoading}
             onClick={handleGenerate}
             className="w-full rounded-xl bg-gradient-to-r from-emerald-500 to-green-500 px-5 py-3 text-sm font-bold text-white shadow-glowGreen transition hover:brightness-105 disabled:cursor-not-allowed disabled:opacity-70 md:text-base"
           >
-            {loading ? 'Generating...' : 'Generate Follow-Up ?'}
+            {isApiLoading ? 'Generating...' : 'Generate Follow-Up ✨'}
           </button>
 
           {error ? <div className="mt-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div> : null}
         </section>
 
         {showProcessingPanel ? (
-          <section className="rounded-2xl border border-emerald-200 bg-emerald-50/50 p-6 shadow-soft transition-all duration-500 md:p-7">
+          <section className="rounded-2xl border border-emerald-200 bg-emerald-50 p-6 shadow-soft transition-all duration-500 md:p-7">
             <div className="mb-4 flex items-center gap-2">
               <BrainCircuit size={20} className="text-emerald-600" />
               <h3 className="text-lg font-semibold text-slate-900">AI is processing your meeting</h3>
@@ -267,6 +293,8 @@ function App() {
 
             <div className="space-y-3">
               {processingSteps.map((step, index) => {
+                const isFinalStep = index === finalProcessingStepIndex;
+                const isFailedFinalStep = isFinalStep && apiRequestStatus === 'error';
                 const isCompleted = index < completedProcessingCount;
                 const isCurrent = index === currentProcessingStep;
 
@@ -274,16 +302,20 @@ function App() {
                   <div
                     key={step}
                     className={`flex items-center justify-between rounded-xl border px-4 py-3 transition-all duration-300 ${
-                      isCompleted
+                      isFailedFinalStep
+                        ? 'border-red-300 bg-red-50'
+                        : isCompleted
                         ? 'border-emerald-200 bg-white'
                         : isCurrent
                           ? 'border-emerald-300 bg-emerald-100/70'
                           : 'border-slate-200 bg-white/70'
                     }`}
                   >
-                    <span className={`text-sm font-medium ${isCompleted ? 'text-emerald-700' : 'text-slate-700'}`}>{step}</span>
+                    <span className={`text-sm font-medium ${isFailedFinalStep ? 'text-red-700' : isCompleted ? 'text-emerald-700' : 'text-slate-700'}`}>{step}</span>
                     <span className="flex h-6 w-6 items-center justify-center">
-                      {isCompleted ? (
+                      {isFailedFinalStep ? (
+                        <span className="rounded-full bg-red-500 p-1 text-white"><AlertTriangle size={14} /></span>
+                      ) : isCompleted ? (
                         <span className="rounded-full bg-emerald-500 p-1 text-white"><Check size={14} /></span>
                       ) : isCurrent ? (
                         <Loader2 size={16} className="animate-spin text-emerald-600" />
@@ -301,7 +333,7 @@ function App() {
         {result ? (
           <section className="space-y-6">
             <div className="grid gap-5 lg:grid-cols-2">
-              <article className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+              <article className="rounded-2xl border border-emerald-200/80 bg-white p-5 shadow-sm">
                 <div className="mb-3 flex items-center gap-2 text-slate-900"><FileText size={18} className="text-emerald-600" /><h3 className="text-2xl font-semibold">Summary</h3></div>
                 <p className="mb-5 text-sm leading-7 text-slate-700 md:text-base">{result.summary || 'No summary was generated.'}</p>
                 <h4 className="mb-2 text-xl font-semibold text-slate-900">Decisions</h4>
@@ -310,8 +342,8 @@ function App() {
               </article>
 
               <div className="space-y-5">
-                <article className="rounded-2xl border border-red-300/70 bg-white p-5 shadow-sm"><div className="mb-3 flex items-center gap-2 text-slate-900"><AlertTriangle size={18} className="text-red-500" /><h3 className="text-2xl font-semibold">Project Risks</h3></div><ul className="list-disc space-y-1 pl-5 text-sm text-slate-800 md:text-base">{Array.isArray(result.risks) && result.risks.length > 0 ? result.risks.map((risk, index) => <li key={index}>{risk}</li>) : <li>No major risks identified.</li>}</ul></article>
-                <article className="rounded-2xl border border-blue-300/70 bg-white p-5 shadow-sm"><div className="mb-3 flex items-center gap-2 text-slate-900"><CheckCircle2 size={18} className="text-sky-500" /><h3 className="text-2xl font-semibold">Key Recommendations</h3></div><ul className="list-disc space-y-1 pl-5 text-sm text-slate-800 md:text-base">{Array.isArray(result.recommendations) && result.recommendations.length > 0 ? result.recommendations.map((recommendation, index) => <li key={index}>{recommendation}</li>) : <li>No recommendations were generated.</li>}</ul></article>
+                <article className="rounded-2xl border border-emerald-200/80 bg-white p-5 shadow-sm"><div className="mb-3 flex items-center gap-2 text-slate-900"><AlertTriangle size={18} className="text-red-500" /><h3 className="text-2xl font-semibold">Project Risks</h3></div><ul className="list-disc space-y-1 pl-5 text-sm text-slate-800 md:text-base">{Array.isArray(result.risks) && result.risks.length > 0 ? result.risks.map((risk, index) => <li key={index}>{risk}</li>) : <li>No major risks identified.</li>}</ul></article>
+                <article className="rounded-2xl border border-emerald-200/80 bg-white p-5 shadow-sm"><div className="mb-3 flex items-center gap-2 text-slate-900"><CheckCircle2 size={18} className="text-emerald-500" /><h3 className="text-2xl font-semibold">Key Recommendations</h3></div><ul className="list-disc space-y-1 pl-5 text-sm text-slate-800 md:text-base">{Array.isArray(result.recommendations) && result.recommendations.length > 0 ? result.recommendations.map((recommendation, index) => <li key={index}>{recommendation}</li>) : <li>No recommendations were generated.</li>}</ul></article>
               </div>
             </div>
 

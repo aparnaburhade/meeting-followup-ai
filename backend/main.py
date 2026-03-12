@@ -51,10 +51,12 @@ Read the transcript and return only valid JSON in this exact format:
 
 For every action item, ALWAYS include a "priority" field.
 Priority must be exactly one of: "High", "Medium", or "Low".
-Determine priority from urgency and deadline mentioned in the transcript.
-If urgency is immediate or deadline is near, use "High".
-If urgency is moderate or deadline is within a reasonable near-term window, use "Medium".
-If no urgency/deadline is specified or urgency is low, use "Low".
+Assign priority using these strict rules:
+- "High": deadline is today, tomorrow, end of day, ASAP, urgent, or clearly immediate.
+- "Medium": deadline is within this week, includes a weekday like Monday-Friday, or is important but not immediate.
+- "Low": deadline is not specified, unclear, long-term, or lower urgency.
+
+If deadline is "Not specified", default to "Low" unless the transcript explicitly signals urgency.
 
 ALWAYS include a "risks" array of strings.
 "risks" should identify potential problems, blockers, dependencies, or unclear responsibilities mentioned in the meeting.
