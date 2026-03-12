@@ -94,11 +94,28 @@ function App() {
     return null;
   };
 
-  const getPriorityLevel = (deadline) => {
+  const normalizePriority = (priorityValue) => {
+    const value = String(priorityValue || '').trim().toLowerCase();
+    if (value === 'high' || value === 'medium' || value === 'low') {
+      return value;
+    }
+    return null;
+  };
+
+  const getPriorityLevel = (deadline, apiPriority) => {
+    const normalizedApiPriority = normalizePriority(apiPriority);
+    if (normalizedApiPriority) {
+      return normalizedApiPriority;
+    }
+
     const value = String(deadline || '').trim().toLowerCase();
 
     if (!value || value.includes('not specified')) {
       return 'low';
+    }
+
+    if (/\bend of day\b|\beod\b|\basap\b|\burgent\b|\bimmediately\b|\btoday\b|\btonight\b/.test(value)) {
+      return 'high';
     }
 
     if (/\btoday\b|\btomorrow\b/.test(value)) {
@@ -281,6 +298,16 @@ function App() {
       marginTop: '8px',
       color: '#334155',
     },
+    risksList: {
+      paddingLeft: '20px',
+      marginTop: '8px',
+      color: '#b91c1c',
+    },
+    recommendationsList: {
+      paddingLeft: '20px',
+      marginTop: '8px',
+      color: '#1d4ed8',
+    },
     tableWrapper: {
       overflowX: 'auto',
       background: '#ffffff',
@@ -456,6 +483,28 @@ function App() {
                 </>
               ) : null}
 
+              {Array.isArray(result.risks) && result.risks.length > 0 ? (
+                <>
+                  <h3 style={styles.sectionTitle}>Risks</h3>
+                  <ul style={styles.risksList}>
+                    {result.risks.map((risk, index) => (
+                      <li key={index}>{risk}</li>
+                    ))}
+                  </ul>
+                </>
+              ) : null}
+
+              {Array.isArray(result.recommendations) && result.recommendations.length > 0 ? (
+                <>
+                  <h3 style={styles.sectionTitle}>Recommendations</h3>
+                  <ul style={styles.recommendationsList}>
+                    {result.recommendations.map((recommendation, index) => (
+                      <li key={index}>{recommendation}</li>
+                    ))}
+                  </ul>
+                </>
+              ) : null}
+
               {Array.isArray(result.action_items) && result.action_items.length > 0 ? (
                 <>
                   <h3 style={styles.sectionTitle}>Action Items</h3>
@@ -477,7 +526,7 @@ function App() {
                             <td style={styles.tableCell}>{item.deadline || 'Not specified'}</td>
                             <td style={styles.tableCell}>
                               {(() => {
-                                const priorityLevel = getPriorityLevel(item.deadline);
+                                const priorityLevel = getPriorityLevel(item.deadline, item.priority);
                                 const priorityLabel =
                                   priorityLevel.charAt(0).toUpperCase() + priorityLevel.slice(1);
 

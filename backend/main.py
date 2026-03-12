@@ -44,6 +44,8 @@ Read the transcript and return only valid JSON in this exact format:
       "priority": "High | Medium | Low"
     }}
   ],
+  "risks": ["risk 1", "risk 2"],
+  "recommendations": ["recommendation 1", "recommendation 2"],
   "follow_up_email": "A professional follow-up email draft"
 }}
 
@@ -53,6 +55,12 @@ Determine priority from urgency and deadline mentioned in the transcript.
 If urgency is immediate or deadline is near, use "High".
 If urgency is moderate or deadline is within a reasonable near-term window, use "Medium".
 If no urgency/deadline is specified or urgency is low, use "Low".
+
+ALWAYS include a "risks" array of strings.
+"risks" should identify potential problems, blockers, dependencies, or unclear responsibilities mentioned in the meeting.
+
+ALWAYS include a "recommendations" array of strings.
+"recommendations" should provide practical suggestions to improve the plan, reduce risk, and prevent issues.
 
 Return only valid JSON.
 
