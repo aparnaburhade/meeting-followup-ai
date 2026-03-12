@@ -7,7 +7,7 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [copyMessage, setCopyMessage] = useState('');
 
-    const transcriptTemplates = {
+  const transcriptTemplates = {
     'Product Launch Meeting': `Alex: Thanks everyone. We are launching the new productivity app on April 15.
   Priya: The landing page and signup flow are complete.
   Jordan: Paid ads will begin one week before launch.
@@ -148,86 +148,104 @@ function App() {
     page: {
       minHeight: '100vh',
       margin: 0,
-      padding: '40px 20px',
-      background: '#f5f7fb',
-      fontFamily: 'Arial, sans-serif',
+      padding: '48px 20px 64px',
+      background: '#f3f4f6',
+      fontFamily: 'Inter, Segoe UI, Arial, sans-serif',
       color: '#1f2937',
     },
     container: {
-      maxWidth: '900px',
+      maxWidth: '1040px',
       margin: '0 auto',
+    },
+    headerBlock: {
+      marginBottom: '20px',
+    },
+    inputCard: {
       background: '#ffffff',
-      borderRadius: '16px',
+      borderRadius: '18px',
       padding: '24px',
-      boxShadow: '0 10px 30px rgba(15, 23, 42, 0.08)',
+      border: '1px solid #e5e7eb',
+      boxShadow: '0 8px 24px rgba(15, 23, 42, 0.06)',
     },
     title: {
       marginTop: 0,
-      marginBottom: '8px',
-      fontSize: '2rem',
+      marginBottom: '10px',
+      fontSize: '2.2rem',
+      lineHeight: 1.1,
+      letterSpacing: '-0.02em',
+      fontWeight: 800,
     },
     subtitle: {
       marginTop: 0,
-      marginBottom: '20px',
-      color: '#4b5563',
+      marginBottom: 0,
+      color: '#6b7280',
+      fontSize: '1rem',
     },
     label: {
       display: 'block',
-      marginBottom: '8px',
-      fontWeight: 'bold',
+      marginBottom: '10px',
+      fontWeight: 700,
+      fontSize: '0.95rem',
     },
     templateRow: {
       display: 'flex',
       flexWrap: 'wrap',
       gap: '8px',
-      marginBottom: '14px',
+      marginBottom: '16px',
     },
     templateButton: {
-      background: '#eef2ff',
-      color: '#1e3a8a',
-      border: '1px solid #c7d2fe',
+      background: '#f8fafc',
+      color: '#334155',
+      border: '1px solid #e2e8f0',
       borderRadius: '999px',
-      padding: '8px 12px',
+      padding: '8px 13px',
       fontSize: '0.9rem',
       cursor: 'pointer',
+      fontWeight: 600,
     },
     textarea: {
       width: '100%',
       minHeight: '220px',
-      padding: '14px',
-      borderRadius: '12px',
-      border: '1px solid #d1d5db',
+      padding: '14px 15px',
+      borderRadius: '14px',
+      border: '1px solid #dbe3ee',
       fontSize: '1rem',
       resize: 'vertical',
       boxSizing: 'border-box',
-      marginBottom: '16px',
+      marginBottom: '18px',
+      color: '#0f172a',
+      background: '#ffffff',
     },
     button: {
       background: '#2563eb',
       color: '#ffffff',
       border: 'none',
-      borderRadius: '10px',
-      padding: '12px 18px',
+      borderRadius: '12px',
+      padding: '12px 20px',
       fontSize: '1rem',
+      fontWeight: 700,
       cursor: loading ? 'not-allowed' : 'pointer',
       opacity: loading ? 0.7 : 1,
+      boxShadow: loading ? 'none' : '0 8px 18px rgba(37, 99, 235, 0.28)',
     },
     secondaryButton: {
       marginTop: '12px',
-      background: '#111827',
+      background: '#0f172a',
       color: '#ffffff',
       border: 'none',
       borderRadius: '10px',
       padding: '10px 14px',
       fontSize: '0.95rem',
+      fontWeight: 600,
       cursor: 'pointer',
     },
     message: {
       marginTop: '16px',
       padding: '12px 14px',
       borderRadius: '10px',
-      background: '#fef3c7',
-      color: '#92400e',
+      background: '#eff6ff',
+      color: '#1d4ed8',
+      border: '1px solid #dbeafe',
     },
     error: {
       marginTop: '16px',
@@ -235,6 +253,7 @@ function App() {
       borderRadius: '10px',
       background: '#fee2e2',
       color: '#b91c1c',
+      border: '1px solid #fecaca',
     },
     success: {
       marginTop: '10px',
@@ -244,76 +263,97 @@ function App() {
     },
     resultCard: {
       marginTop: '24px',
-      padding: '20px',
-      borderRadius: '14px',
-      background: '#f9fafb',
+      padding: '24px',
+      borderRadius: '18px',
+      background: '#ffffff',
       border: '1px solid #e5e7eb',
+      boxShadow: '0 8px 24px rgba(15, 23, 42, 0.06)',
     },
     sectionTitle: {
-      marginBottom: '8px',
+      marginTop: '22px',
+      marginBottom: '10px',
+      fontSize: '1.08rem',
+      fontWeight: 700,
+      color: '#0f172a',
     },
     list: {
       paddingLeft: '20px',
+      marginTop: '8px',
+      color: '#334155',
     },
     tableWrapper: {
       overflowX: 'auto',
       background: '#ffffff',
-      border: '1px solid #e5e7eb',
-      borderRadius: '10px',
+      border: '1px solid #e2e8f0',
+      borderRadius: '12px',
     },
     table: {
       width: '100%',
       borderCollapse: 'collapse',
     },
     tableHead: {
-      background: '#f3f4f6',
+      background: '#f8fafc',
     },
     tableHeader: {
       padding: '12px',
       textAlign: 'left',
-      borderBottom: '1px solid #e5e7eb',
-      fontSize: '0.95rem',
+      borderBottom: '1px solid #e2e8f0',
+      fontSize: '0.84rem',
+      color: '#64748b',
+      fontWeight: 700,
+      textTransform: 'uppercase',
+      letterSpacing: '0.04em',
     },
     tableCell: {
       padding: '12px',
-      borderBottom: '1px solid #e5e7eb',
+      borderBottom: '1px solid #eef2f7',
       verticalAlign: 'top',
+      color: '#334155',
     },
     emailBox: {
       marginTop: '8px',
-      padding: '14px',
-      background: '#ffffff',
-      border: '1px solid #e5e7eb',
-      borderRadius: '10px',
+      padding: '16px',
+      background: '#f8fafc',
+      border: '1px solid #e2e8f0',
+      borderRadius: '12px',
     },
     emailText: {
       margin: 0,
       whiteSpace: 'pre-wrap',
-      color: '#1f2937',
+      color: '#1e293b',
       lineHeight: 1.5,
     },
     flowSection: {
       marginTop: '20px',
-      padding: '20px',
-      borderRadius: '14px',
-      background: '#f9fafb',
+      padding: '24px',
+      borderRadius: '18px',
+      background: '#ffffff',
       border: '1px solid #e5e7eb',
+      boxShadow: '0 8px 24px rgba(15, 23, 42, 0.06)',
+      textAlign: 'center',
     },
     flowTitle: {
       marginTop: 0,
-      marginBottom: '14px',
+      marginBottom: '16px',
+      fontSize: '1.08rem',
+      color: '#0f172a',
+    },
+    flowSteps: {
+      maxWidth: '520px',
+      margin: '0 auto',
     },
     flowStep: {
-      background: '#ffffff',
-      border: '1px solid #e5e7eb',
-      borderRadius: '10px',
-      padding: '12px 14px',
-      fontWeight: 500,
+      background: '#f8fafc',
+      border: '1px solid #e2e8f0',
+      borderRadius: '12px',
+      padding: '12px 16px',
+      fontWeight: 600,
+      color: '#334155',
     },
     flowArrow: {
       textAlign: 'center',
-      color: '#6b7280',
-      margin: '6px 0',
+      color: '#94a3b8',
+      margin: '8px 0',
       fontSize: '1.1rem',
     },
   };
@@ -325,10 +365,19 @@ function App() {
           .priority-badge {
             display: inline-block;
             border-radius: 999px;
-            padding: 3px 10px;
+            padding: 4px 10px;
             font-size: 0.8rem;
             font-weight: 700;
             color: #ffffff;
+            letter-spacing: 0.01em;
+          }
+
+          .action-table tbody tr:nth-child(even) {
+            background: #fcfdff;
+          }
+
+          .action-table tbody tr:hover {
+            background: #f8fafc;
           }
 
           .priority-high {
@@ -345,40 +394,44 @@ function App() {
         `}
       </style>
       <div style={styles.container}>
-        <h1 style={styles.title}>Meeting Follow-Up AI</h1>
-        <p style={styles.subtitle}>
-          Paste a meeting transcript, click the button, and get a simple follow-up summary.
-        </p>
-
-        <label htmlFor="transcript" style={styles.label}>
-          Meeting transcript
-        </label>
-        <div style={styles.templateRow}>
-          {Object.keys(transcriptTemplates).map((templateName) => (
-            <button
-              key={templateName}
-              type="button"
-              style={styles.templateButton}
-              onClick={() => handleTemplateSelect(templateName)}
-            >
-              {templateName}
-            </button>
-          ))}
+        <div style={styles.headerBlock}>
+          <h1 style={styles.title}>Meeting Follow-Up AI</h1>
+          <p style={styles.subtitle}>
+            Paste a meeting transcript, click the button, and get a polished AI-generated follow-up.
+          </p>
         </div>
-        <textarea
-          id="transcript"
-          style={styles.textarea}
-          placeholder="Paste your meeting transcript here..."
-          value={transcript}
-          onChange={(event) => setTranscript(event.target.value)}
-        />
 
-        <button type="button" style={styles.button} onClick={handleGenerate} disabled={loading}>
-          {loading ? 'Generating...' : 'Generate Follow-Up'}
-        </button>
+        <div style={styles.inputCard}>
+          <label htmlFor="transcript" style={styles.label}>
+            Meeting transcript
+          </label>
+          <div style={styles.templateRow}>
+            {Object.keys(transcriptTemplates).map((templateName) => (
+              <button
+                key={templateName}
+                type="button"
+                style={styles.templateButton}
+                onClick={() => handleTemplateSelect(templateName)}
+              >
+                {templateName}
+              </button>
+            ))}
+          </div>
+          <textarea
+            id="transcript"
+            style={styles.textarea}
+            placeholder="Paste your meeting transcript here..."
+            value={transcript}
+            onChange={(event) => setTranscript(event.target.value)}
+          />
 
-        {error ? <div style={styles.error}>{error}</div> : null}
-        {loading ? <div style={styles.message}>Analyzing transcript...</div> : null}
+          <button type="button" style={styles.button} onClick={handleGenerate} disabled={loading}>
+            {loading ? 'Generating...' : 'Generate Follow-Up'}
+          </button>
+
+          {error ? <div style={styles.error}>{error}</div> : null}
+          {loading ? <div style={styles.message}>Analyzing transcript...</div> : null}
+        </div>
 
         {result ? (
           <>
@@ -407,7 +460,7 @@ function App() {
                 <>
                   <h3 style={styles.sectionTitle}>Action Items</h3>
                   <div style={styles.tableWrapper}>
-                    <table style={styles.table}>
+                    <table style={styles.table} className="action-table">
                       <thead style={styles.tableHead}>
                         <tr>
                           <th style={styles.tableHeader}>Owner</th>
@@ -459,15 +512,17 @@ function App() {
 
             <div style={styles.flowSection}>
               <h3 style={styles.flowTitle}>Automation Flow</h3>
-              <div style={styles.flowStep}>1. Meeting Transcript Input</div>
-              <div style={styles.flowArrow}>↓</div>
-              <div style={styles.flowStep}>2. AI Summarizes Meeting</div>
-              <div style={styles.flowArrow}>↓</div>
-              <div style={styles.flowStep}>3. Extract Decisions</div>
-              <div style={styles.flowArrow}>↓</div>
-              <div style={styles.flowStep}>4. Extract Action Items</div>
-              <div style={styles.flowArrow}>↓</div>
-              <div style={styles.flowStep}>5. Generate Follow-Up Email</div>
+              <div style={styles.flowSteps}>
+                <div style={styles.flowStep}>1. Meeting Transcript Input</div>
+                <div style={styles.flowArrow}>↓</div>
+                <div style={styles.flowStep}>2. AI Summarizes Meeting</div>
+                <div style={styles.flowArrow}>↓</div>
+                <div style={styles.flowStep}>3. Extract Decisions</div>
+                <div style={styles.flowArrow}>↓</div>
+                <div style={styles.flowStep}>4. Extract Action Items</div>
+                <div style={styles.flowArrow}>↓</div>
+                <div style={styles.flowStep}>5. Generate Follow-Up Email</div>
+              </div>
             </div>
           </>
         ) : null}
