@@ -230,6 +230,10 @@ function App() {
             })}
           </div>
 
+          <div className="mb-3 inline-flex items-center rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-700 ring-1 ring-emerald-200">
+            Demo Transcript
+          </div>
+
           <textarea
             id="transcript"
             value={transcript}
@@ -237,6 +241,10 @@ function App() {
             placeholder="Paste your meeting transcript here..."
             className="mb-4 h-60 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-slate-800 outline-none transition focus:border-emerald-300 focus:ring-4 focus:ring-emerald-100"
           />
+
+          <p className="mb-4 text-xs text-slate-500 md:text-sm">
+            This sample transcript is for demo purposes only. You can replace it with your real meeting transcript anytime.
+          </p>
 
           <button
             type="button"
