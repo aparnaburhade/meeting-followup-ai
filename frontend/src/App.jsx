@@ -219,24 +219,24 @@ function App() {
   };
 
   return (
-    <main className="relative min-h-screen overflow-hidden bg-gradient-to-b from-slate-50 to-white px-4 py-10 font-sans md:px-6 lg:py-14">
+    <main className="relative min-h-screen overflow-hidden bg-gradient-to-b from-slate-50 to-white py-10 font-sans lg:py-14">
       <div className="pointer-events-none absolute -left-24 top-24 h-72 w-72 rounded-full bg-slate-200/25 blur-3xl" />
       <div className="pointer-events-none absolute -right-24 bottom-20 h-72 w-72 rounded-full bg-slate-100/25 blur-3xl" />
 
-      <div className="relative mx-auto max-w-5xl space-y-7">
+      <div className="relative mx-auto w-full max-w-6xl space-y-6 px-4 sm:space-y-7 sm:px-6 lg:px-8">
         <section className="space-y-2 text-left">
-          <h1 className="text-4xl font-extrabold tracking-tight text-slate-900 md:text-5xl">
+          <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl lg:text-5xl">
             {result?.meeting_title || 'Meeting Follow-Up AI'}
           </h1>
-          <p className="max-w-3xl text-sm text-slate-600 md:text-base">
+          <p className="max-w-2xl text-sm text-slate-600 sm:text-base">
             Paste a meeting transcript, click the button, and get a polished AI-generated follow-up.
           </p>
         </section>
 
-        <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-soft md:p-7">
+        <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-soft sm:p-6 lg:p-7">
           <label htmlFor="transcript" className="mb-3 block text-sm font-semibold text-slate-800">Meeting transcript</label>
 
-          <div className="mb-4 flex flex-wrap gap-2">
+          <div className="mb-4 flex flex-wrap gap-2 sm:gap-2.5">
             {Object.keys(transcriptTemplates).map((templateName) => {
               const isActive = activeTemplate === templateName;
               return (
@@ -244,7 +244,7 @@ function App() {
                   key={templateName}
                   type="button"
                   onClick={() => handleTemplateSelect(templateName)}
-                  className={`rounded-full px-3.5 py-2 text-xs font-semibold transition-all md:text-sm ${
+                  className={`w-full rounded-full px-3.5 py-2 text-xs font-semibold transition-all sm:w-auto md:text-sm ${
                     isActive
                       ? 'bg-emerald-500 text-white shadow-sm'
                       : 'border border-slate-200 bg-white text-slate-700 hover:bg-slate-50'
@@ -265,7 +265,7 @@ function App() {
             value={transcript}
             onChange={(event) => setTranscript(event.target.value)}
             placeholder="Paste your meeting transcript here..."
-            className="mb-4 h-60 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-slate-800 outline-none transition focus:border-emerald-300 focus:ring-4 focus:ring-emerald-100"
+            className="mb-4 h-56 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-slate-800 outline-none transition focus:border-emerald-300 focus:ring-4 focus:ring-emerald-100 sm:h-60"
           />
 
           <p className="mb-4 text-xs text-slate-500 md:text-sm">
@@ -285,7 +285,7 @@ function App() {
         </section>
 
         {showProcessingPanel ? (
-          <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-soft transition-all duration-500 md:p-7">
+          <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-soft transition-all duration-500 sm:p-6 lg:p-7">
             <div className="mb-4 flex items-center gap-2">
               <BrainCircuit size={20} className="text-emerald-600" />
               <h3 className="text-lg font-semibold text-slate-900">AI is processing your meeting</h3>
@@ -332,7 +332,7 @@ function App() {
 
         {result ? (
           <section className="space-y-6">
-            <div className="grid gap-5 lg:grid-cols-2">
+            <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
               <article className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
                 <div className="mb-3 flex items-center gap-2 text-slate-900"><FileText size={18} className="text-emerald-600" /><h3 className="text-2xl font-semibold">Summary</h3></div>
                 <p className="mb-5 text-sm leading-7 text-slate-700 md:text-base">{result.summary || 'No summary was generated.'}</p>
@@ -347,14 +347,14 @@ function App() {
               </div>
             </div>
 
-            <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-soft md:p-7">
+            <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-soft sm:p-6 lg:p-7">
               <div className="mb-4 flex items-center gap-2 text-slate-900"><ListTodo size={18} className="text-emerald-600" /><h3 className="text-2xl font-semibold">Action Items</h3></div>
-              <div className="overflow-x-auto rounded-2xl border border-slate-300/80"><table className="min-w-full text-left text-sm md:text-base"><thead className="bg-slate-50"><tr><th className="px-4 py-3 text-xs font-semibold uppercase tracking-wide text-slate-700"><span className="inline-flex items-center gap-1">Owner <ChevronsUpDown size={14} /></span></th><th className="px-4 py-3 text-xs font-semibold uppercase tracking-wide text-slate-700">Task</th><th className="px-4 py-3 text-xs font-semibold uppercase tracking-wide text-slate-700"><span className="inline-flex items-center gap-1">Deadline <ChevronsUpDown size={14} /></span></th><th className="px-4 py-3 text-xs font-semibold uppercase tracking-wide text-slate-700"><span className="inline-flex items-center gap-1">Priority <ChevronsUpDown size={14} /></span></th></tr></thead><tbody>{Array.isArray(result.action_items) && result.action_items.length > 0 ? result.action_items.map((item, index) => { const priorityLevel = getPriorityLevel(item.deadline, item.priority); const priorityLabel = priorityLevel.charAt(0).toUpperCase() + priorityLevel.slice(1); return (<tr key={index} className="border-t border-slate-200 align-top hover:bg-slate-50"><td className="px-4 py-5"><div className="flex items-center gap-3"><div className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-500 text-xs font-bold text-white">{getOwnerInitials(item.owner)}</div><span className="font-medium text-slate-700">{item.owner || 'Not specified'}</span></div></td><td className="px-4 py-5 text-slate-700">{item.task || 'Not specified'}</td><td className="px-4 py-5 text-slate-700">{item.deadline || 'Not specified'}</td><td className="px-4 py-5"><span className={`inline-flex rounded-full px-3 py-1 text-xs font-bold ${priorityClasses[priorityLevel]}`}>{priorityLabel}</span></td></tr>); }) : <tr><td colSpan="4" className="px-4 py-6 text-center text-slate-500">No action items found.</td></tr>}</tbody></table></div>
+              <div className="overflow-x-auto rounded-2xl border border-slate-300/80"><table className="min-w-[680px] w-full text-left text-sm md:text-base"><thead className="bg-slate-50"><tr><th className="px-4 py-3 text-xs font-semibold uppercase tracking-wide text-slate-700"><span className="inline-flex items-center gap-1">Owner <ChevronsUpDown size={14} /></span></th><th className="px-4 py-3 text-xs font-semibold uppercase tracking-wide text-slate-700">Task</th><th className="px-4 py-3 text-xs font-semibold uppercase tracking-wide text-slate-700"><span className="inline-flex items-center gap-1">Deadline <ChevronsUpDown size={14} /></span></th><th className="px-4 py-3 text-xs font-semibold uppercase tracking-wide text-slate-700"><span className="inline-flex items-center gap-1">Priority <ChevronsUpDown size={14} /></span></th></tr></thead><tbody>{Array.isArray(result.action_items) && result.action_items.length > 0 ? result.action_items.map((item, index) => { const priorityLevel = getPriorityLevel(item.deadline, item.priority); const priorityLabel = priorityLevel.charAt(0).toUpperCase() + priorityLevel.slice(1); return (<tr key={index} className="border-t border-slate-200 align-top hover:bg-slate-50"><td className="px-4 py-5"><div className="flex items-center gap-3"><div className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-500 text-xs font-bold text-white">{getOwnerInitials(item.owner)}</div><span className="font-medium text-slate-700">{item.owner || 'Not specified'}</span></div></td><td className="px-4 py-5 text-slate-700">{item.task || 'Not specified'}</td><td className="px-4 py-5 text-slate-700">{item.deadline || 'Not specified'}</td><td className="px-4 py-5"><span className={`inline-flex rounded-full px-3 py-1 text-xs font-bold ${priorityClasses[priorityLevel]}`}>{priorityLabel}</span></td></tr>); }) : <tr><td colSpan="4" className="px-4 py-6 text-center text-slate-500">No action items found.</td></tr>}</tbody></table></div>
             </section>
 
-            {result.follow_up_email ? <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-soft md:p-7"><div className="mb-4 flex items-center gap-2 text-slate-900"><Mail size={18} className="text-emerald-600" /><h3 className="text-2xl font-semibold">Follow-Up Email</h3></div><div className="rounded-2xl border border-slate-200 bg-slate-50 p-5"><p className="whitespace-pre-wrap text-sm leading-7 text-slate-700 md:text-base">{result.follow_up_email}</p></div><button type="button" onClick={handleCopyEmail} className="mt-4 inline-flex items-center gap-2 rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-800"><Mail size={16} />Copy Email</button>{copyMessage ? <div className="mt-3 text-sm font-semibold text-emerald-700">{copyMessage}</div> : null}</section> : null}
+            {result.follow_up_email ? <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-soft sm:p-6 lg:p-7"><div className="mb-4 flex items-center gap-2 text-slate-900"><Mail size={18} className="text-emerald-600" /><h3 className="text-2xl font-semibold">Follow-Up Email</h3></div><div className="rounded-2xl border border-slate-200 bg-slate-50 p-5"><p className="whitespace-pre-wrap text-sm leading-7 text-slate-700 md:text-base">{result.follow_up_email}</p></div><button type="button" onClick={handleCopyEmail} className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-800 sm:w-auto"><Mail size={16} />Copy Email</button>{copyMessage ? <div className="mt-3 text-sm font-semibold text-emerald-700">{copyMessage}</div> : null}</section> : null}
 
-            <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-soft md:p-7"><div className="mb-6 flex flex-wrap items-center justify-between gap-3"><h3 className="text-xl font-semibold text-slate-900">Automation Flow - Status: ACTIVE</h3><span className="inline-flex items-center gap-2 rounded-full bg-emerald-100 px-3 py-1 text-xs font-bold text-emerald-700 ring-1 ring-emerald-200"><span className="h-2 w-2 animate-pulse rounded-full bg-emerald-500" /> ACTIVE</span></div><div className="flex flex-col items-center md:flex-row md:items-start md:justify-between md:gap-2">{flowSteps.map((step, index) => { const Icon = step.icon; const isLast = index === flowSteps.length - 1; return (<React.Fragment key={step.label}><div className="flex w-full flex-col items-center text-center md:w-auto md:flex-1"><div className="mb-3 flex h-14 w-14 items-center justify-center rounded-full bg-emerald-50 text-emerald-600 ring-1 ring-emerald-200 shadow-sm"><Icon size={22} /></div><p className="max-w-[130px] text-xs font-medium text-slate-600 md:text-sm">{step.label}</p></div>{!isLast ? <><div className="my-3 h-8 w-px bg-gradient-to-b from-emerald-300 to-emerald-500 md:hidden" /><div className="mx-2 hidden items-center md:flex"><div className="h-1 w-12 rounded-full bg-gradient-to-r from-emerald-300 to-emerald-500" /><ArrowRight size={14} className="ml-1 text-emerald-500" /></div></> : null}</React.Fragment>); })}</div></section>
+            <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-soft sm:p-6 lg:p-7"><div className="mb-6 flex flex-wrap items-center justify-between gap-3"><h3 className="text-xl font-semibold text-slate-900">Automation Flow - Status: ACTIVE</h3><span className="inline-flex items-center gap-2 rounded-full bg-emerald-100 px-3 py-1 text-xs font-bold text-emerald-700 ring-1 ring-emerald-200"><span className="h-2 w-2 animate-pulse rounded-full bg-emerald-500" /> ACTIVE</span></div><div className="flex flex-col items-center gap-2 lg:flex-row lg:items-start lg:justify-between">{flowSteps.map((step, index) => { const Icon = step.icon; const isLast = index === flowSteps.length - 1; return (<React.Fragment key={step.label}><div className="flex w-full flex-col items-center text-center lg:w-auto lg:flex-1"><div className="mb-3 flex h-14 w-14 items-center justify-center rounded-full bg-emerald-50 text-emerald-600 ring-1 ring-emerald-200 shadow-sm"><Icon size={22} /></div><p className="max-w-[150px] text-xs font-medium text-slate-600 sm:text-sm">{step.label}</p></div>{!isLast ? <><div className="my-3 h-8 w-px bg-gradient-to-b from-emerald-300 to-emerald-500 lg:hidden" /><div className="mx-2 hidden items-center lg:flex"><div className="h-1 w-12 rounded-full bg-gradient-to-r from-emerald-300 to-emerald-500" /><ArrowRight size={14} className="ml-1 text-emerald-500" /></div></> : null}</React.Fragment>); })}</div></section>
           </section>
         ) : null}
       </div>
