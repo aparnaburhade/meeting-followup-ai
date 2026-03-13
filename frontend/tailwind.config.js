@@ -5,6 +5,7 @@ export default {
     extend: {
       fontFamily: {
         sans: ['"Plus Jakarta Sans"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        serif: ['"DM Serif Display"', 'ui-serif', 'Georgia', 'serif'],
       },
       boxShadow: {
         soft: '0 10px 30px rgba(15, 23, 42, 0.08)',

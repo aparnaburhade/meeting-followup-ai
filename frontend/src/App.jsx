@@ -212,8 +212,13 @@ function App() {
     setActiveTemplate(templateName);
   };
 
+  const handleScrollToDemo = (event) => {
+    event.preventDefault();
+    document.getElementById('demo')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
+
   const priorityClasses = {
-    high: 'bg-emerald-500 text-white ring-1 ring-emerald-400/70',
+    high: 'bg-emerald-100 text-emerald-700 ring-1 ring-emerald-200',
     medium: 'bg-emerald-100 text-emerald-700 ring-1 ring-emerald-200',
     low: 'bg-slate-100 text-slate-600 ring-1 ring-slate-200',
   };
@@ -225,46 +230,34 @@ function App() {
 
       <div className="relative mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8">
         <header className="mb-10 sm:mb-14">
-          <nav className="mx-auto flex w-full items-center justify-between rounded-full border border-stone-200 bg-white/90 px-4 py-2.5 shadow-sm backdrop-blur sm:px-6">
+          <nav className="mx-auto flex w-full items-center justify-center rounded-full border border-stone-200 bg-white/90 px-4 py-3 shadow-sm backdrop-blur sm:px-6">
             <p className="text-sm font-semibold tracking-tight text-slate-900 sm:text-base">Meeting Follow-Up AI</p>
-
-            <div className="hidden items-center gap-6 text-sm text-slate-600 md:flex">
-              <a href="#features" className="transition hover:text-slate-900">Features</a>
-              <a href="#demo" className="transition hover:text-slate-900">Demo</a>
-              <a href="#how-it-works" className="transition hover:text-slate-900">How it Works</a>
-              <a href="#github" className="transition hover:text-slate-900">GitHub</a>
-            </div>
-
-            <a
-              href="#demo"
-              className="inline-flex items-center rounded-full bg-emerald-600 px-4 py-2 text-xs font-semibold text-white transition hover:bg-emerald-700 sm:text-sm"
-            >
-              Try Demo
-            </a>
           </nav>
         </header>
 
         <section className="mx-auto mb-12 max-w-4xl space-y-5 text-center sm:mb-16 lg:mb-20" id="features">
-          <h1 className="font-serif text-4xl leading-tight tracking-tight text-slate-900 sm:text-5xl lg:text-6xl">
-            The AI meeting assistant that helps you turn conversations into action.
+          <h1 className="font-serif text-4xl leading-[1.08] tracking-tight text-slate-900 sm:text-5xl lg:text-6xl">
+            Turn meeting transcripts into summaries, action items, and follow-ups — instantly.
           </h1>
-          <p className="mx-auto max-w-2xl text-sm leading-7 text-slate-600 sm:text-base">
-            Paste a meeting transcript and instantly generate summaries, action items, risks, recommendations, and follow-up emails.
+          <p className="mx-auto max-w-2xl text-sm leading-7 text-slate-500 sm:text-base">
+            Paste a meeting transcript and let AI extract decisions, risks, recommendations, and next steps.
           </p>
           <div className="pt-2 sm:pt-4">
             <a
               href="#demo"
+              onClick={handleScrollToDemo}
               className="inline-flex items-center justify-center rounded-full bg-emerald-600 px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-emerald-700"
             >
-              Generate Follow-Up ✨
+              Try the Demo ✨
             </a>
           </div>
         </section>
 
-        <section id="demo" className="mb-10 grid grid-cols-1 gap-6 lg:mb-12 lg:grid-cols-2 lg:gap-7">
-          <article className="rounded-3xl border border-stone-200 bg-white p-4 shadow-sm sm:p-6 lg:p-7">
-            <label htmlFor="transcript" className="mb-4 block text-sm font-semibold text-slate-800">Meeting transcript</label>
+        <section id="demo" className="mb-10 grid grid-cols-1 items-start gap-6 lg:mb-12 lg:grid-cols-2 lg:gap-7">
+          <article className="self-start rounded-3xl border border-stone-200 bg-white p-3.5 shadow-sm sm:p-5 lg:p-6">
+            <label htmlFor="transcript" className="mb-4 block text-sm font-semibold text-slate-800">Meeting notes or transcript</label>
 
+            <p className="mb-3 text-xs text-slate-500 md:text-sm">Example meeting types</p>
             <div className="mb-4 flex flex-wrap gap-2 sm:gap-2.5">
               {Object.keys(transcriptTemplates).map((templateName) => {
                 const isActive = activeTemplate === templateName;
@@ -275,7 +268,7 @@ function App() {
                     onClick={() => handleTemplateSelect(templateName)}
                     className={`w-full rounded-full px-3.5 py-2 text-xs font-medium transition sm:w-auto md:text-sm ${
                       isActive
-                        ? 'bg-emerald-600 text-white shadow-sm'
+                        ? 'bg-emerald-700 text-white shadow-sm'
                         : 'border border-stone-200 bg-white text-slate-700 hover:bg-stone-50'
                     }`}
                   >
@@ -285,8 +278,8 @@ function App() {
               })}
             </div>
 
-            <div className="mb-3 inline-flex items-center rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700">
-              Demo Transcript
+            <div className="mb-3 inline-flex items-center rounded-full border border-emerald-200 bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-700">
+              Example transcript
             </div>
 
             <textarea
@@ -297,15 +290,15 @@ function App() {
               className="mb-4 h-56 w-full rounded-2xl border border-stone-200 bg-white px-4 py-3 text-slate-800 outline-none transition focus:border-emerald-300 focus:ring-4 focus:ring-emerald-100 sm:h-64"
             />
 
-            <p className="mb-4 text-xs text-slate-500 md:text-sm">
-              This is a demo transcript for testing the AI. You can replace it with your own meeting transcript anytime.
+            <p className="mb-3 text-xs text-slate-500 md:text-sm">
+              Paste meeting notes or transcripts from Zoom, Google Meet, Teams, Otter, or your own notes.
             </p>
 
             <button
               type="button"
               disabled={isApiLoading}
               onClick={handleGenerate}
-              className="w-full rounded-xl bg-gradient-to-r from-emerald-600 to-emerald-500 px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:from-emerald-700 hover:to-emerald-600 disabled:cursor-not-allowed disabled:opacity-70 md:text-base"
+              className="w-full rounded-xl bg-emerald-600 px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-70 md:text-base"
             >
               {isApiLoading ? 'Generating...' : 'Generate Follow-Up ✨'}
             </button>
@@ -313,10 +306,13 @@ function App() {
             {error ? <div className="mt-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div> : null}
           </article>
 
-          <article className="rounded-3xl border border-stone-200 bg-white p-4 shadow-sm sm:p-6 lg:p-7">
+          <article className="rounded-3xl border border-stone-200 bg-white p-3.5 shadow-sm sm:p-5 lg:p-6">
             <div className="mb-4 flex items-center gap-2">
               <BrainCircuit size={18} className="text-emerald-600" />
-              <h2 className="text-lg font-semibold text-slate-900">AI output preview</h2>
+              <h2 className="text-lg font-semibold text-slate-900">
+                {result ? 'AI Generated Insights' : 'Example AI output'}
+                {!result ? <span className="block text-xs font-normal text-slate-500">Preview of insights the AI will generate from your meeting notes.</span> : null}
+              </h2>
             </div>
 
             {showProcessingPanel ? (
@@ -345,7 +341,7 @@ function App() {
                         {isFailedFinalStep ? (
                           <span className="rounded-full bg-red-500 p-1 text-white"><AlertTriangle size={14} /></span>
                         ) : isCompleted ? (
-                          <span className="rounded-full bg-emerald-500 p-1 text-white"><Check size={14} /></span>
+                          <span className="rounded-full bg-emerald-600 p-1 text-white"><Check size={14} /></span>
                         ) : isCurrent ? (
                           <Loader2 size={16} className="animate-spin text-emerald-600" />
                         ) : (
@@ -380,10 +376,35 @@ function App() {
                 </div>
               </div>
             ) : (
-              <div className="flex h-full min-h-[360px] items-center justify-center rounded-2xl border border-dashed border-stone-300 bg-stone-50/70 p-6 text-center">
-                <p className="max-w-xs text-sm leading-7 text-slate-500">
-                  Your AI analysis preview will appear here after you generate a follow-up from the transcript.
-                </p>
+              <div className="space-y-2 rounded-2xl border border-stone-200 bg-stone-50/80 p-3">
+                <div className="rounded-xl border border-stone-200 bg-white/80 p-2.5">
+                  <p className="text-xs font-semibold uppercase tracking-wide text-slate-600">Summary</p>
+                  <p className="mt-1.5 text-sm leading-6 text-slate-600">
+                    The team aligned on launch priorities and confirmed owners for final QA and campaign planning.
+                  </p>
+                </div>
+
+                <div className="rounded-xl border border-stone-200 bg-white/80 p-2.5">
+                  <p className="text-xs font-semibold uppercase tracking-wide text-slate-600">Action Items</p>
+                  <ul className="mt-1.5 list-disc space-y-1 pl-5 text-sm text-slate-600">
+                    <li>Finalize QA checklist and share status update by Friday.</li>
+                    <li>Send campaign timeline and budget draft before the next sync.</li>
+                  </ul>
+                </div>
+
+                <div className="rounded-xl border border-stone-200 bg-white/80 p-2.5">
+                  <p className="text-xs font-semibold uppercase tracking-wide text-slate-600">Risks</p>
+                  <ul className="mt-1.5 list-disc space-y-1 pl-5 text-sm text-slate-600">
+                    <li>Dependency on final QA sign-off could delay release readiness.</li>
+                  </ul>
+                </div>
+
+                <div className="rounded-xl border border-stone-200 bg-white/80 p-2.5">
+                  <p className="text-xs font-semibold uppercase tracking-wide text-slate-600">Follow-Up Email</p>
+                  <p className="mt-1.5 text-sm leading-6 text-slate-600">
+                    A concise follow-up draft with decisions, action owners, and deadlines will be generated here.
+                  </p>
+                </div>
               </div>
             )}
           </article>
@@ -407,7 +428,7 @@ function App() {
 
               <div className="space-y-5">
                 <article className="rounded-2xl border border-stone-200 bg-white p-5 shadow-sm"><div className="mb-3 flex items-center gap-2 text-slate-900"><AlertTriangle size={18} className="text-amber-500" /><h3 className="text-2xl font-semibold">Project Risks</h3></div><ul className="list-disc space-y-1 pl-5 text-sm text-slate-700 md:text-base">{Array.isArray(result.risks) && result.risks.length > 0 ? result.risks.map((risk, index) => <li key={index}>{risk}</li>) : <li>No major risks identified.</li>}</ul></article>
-                <article className="rounded-2xl border border-stone-200 bg-white p-5 shadow-sm"><div className="mb-3 flex items-center gap-2 text-slate-900"><CheckCircle2 size={18} className="text-emerald-500" /><h3 className="text-2xl font-semibold">Key Recommendations</h3></div><ul className="list-disc space-y-1 pl-5 text-sm text-slate-700 md:text-base">{Array.isArray(result.recommendations) && result.recommendations.length > 0 ? result.recommendations.map((recommendation, index) => <li key={index}>{recommendation}</li>) : <li>No recommendations were generated.</li>}</ul></article>
+                <article className="rounded-2xl border border-stone-200 bg-white p-5 shadow-sm"><div className="mb-3 flex items-center gap-2 text-slate-900"><CheckCircle2 size={18} className="text-emerald-600" /><h3 className="text-2xl font-semibold">Key Recommendations</h3></div><ul className="list-disc space-y-1 pl-5 text-sm text-slate-700 md:text-base">{Array.isArray(result.recommendations) && result.recommendations.length > 0 ? result.recommendations.map((recommendation, index) => <li key={index}>{recommendation}</li>) : <li>No recommendations were generated.</li>}</ul></article>
               </div>
             </div>
 
@@ -418,7 +439,7 @@ function App() {
 
             {result.follow_up_email ? <section className="rounded-2xl border border-stone-200 bg-white p-4 shadow-sm sm:p-6 lg:p-7"><div className="mb-4 flex items-center gap-2 text-slate-900"><Mail size={18} className="text-emerald-600" /><h3 className="text-2xl font-semibold">Follow-Up Email</h3></div><div className="rounded-2xl border border-stone-200 bg-stone-50 p-5"><p className="whitespace-pre-wrap text-sm leading-7 text-slate-700 md:text-base">{result.follow_up_email}</p></div><button type="button" onClick={handleCopyEmail} className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-800 sm:w-auto"><Mail size={16} />Copy Email</button>{copyMessage ? <div className="mt-3 text-sm font-semibold text-emerald-700">{copyMessage}</div> : null}</section> : null}
 
-            <section id="how-it-works" className="rounded-2xl border border-stone-200 bg-white p-4 shadow-sm sm:p-6 lg:p-7"><div className="mb-6 flex flex-wrap items-center justify-between gap-3"><h3 className="text-xl font-semibold text-slate-900">Automation Flow</h3><span className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-700"><span className="h-2 w-2 animate-pulse rounded-full bg-emerald-500" /> ACTIVE</span></div><div className="flex flex-col items-center gap-3 lg:flex-row lg:items-start lg:justify-between">{flowSteps.map((step, index) => { const Icon = step.icon; const isLast = index === flowSteps.length - 1; return (<React.Fragment key={step.label}><div className="flex w-full flex-col items-center text-center lg:w-auto lg:flex-1"><div className="mb-3 flex h-14 w-14 items-center justify-center rounded-full border border-emerald-200 bg-emerald-50 text-emerald-600"><Icon size={22} /></div><p className="max-w-[160px] text-xs font-medium text-slate-600 sm:text-sm">{step.label}</p></div>{!isLast ? <><div className="my-2 h-7 w-px bg-gradient-to-b from-stone-300 to-stone-400 lg:hidden" /><div className="mx-2 hidden items-center lg:flex"><div className="h-px w-12 bg-stone-300" /><ArrowRight size={14} className="ml-1 text-stone-400" /></div></> : null}</React.Fragment>); })}</div></section>
+            <section id="how-it-works" className="rounded-2xl border border-stone-200 bg-white p-4 shadow-sm sm:p-6 lg:p-7"><div className="mb-6 flex flex-wrap items-center justify-between gap-3"><h3 className="text-xl font-semibold text-slate-900">Automation Flow</h3><span className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-100 px-3 py-1 text-xs font-bold text-emerald-700"><span className="h-2 w-2 animate-pulse rounded-full bg-emerald-600" /> ACTIVE</span></div><div className="flex flex-col items-center gap-3 lg:flex-row lg:items-start lg:justify-between">{flowSteps.map((step, index) => { const Icon = step.icon; const isLast = index === flowSteps.length - 1; return (<React.Fragment key={step.label}><div className="flex w-full flex-col items-center text-center lg:w-auto lg:flex-1"><div className="mb-3 flex h-14 w-14 items-center justify-center rounded-full border border-emerald-200 bg-emerald-100 text-emerald-600"><Icon size={22} /></div><p className="max-w-[160px] text-xs font-medium text-slate-600 sm:text-sm">{step.label}</p></div>{!isLast ? <><div className="my-2 h-7 w-px bg-gradient-to-b from-stone-300 to-stone-400 lg:hidden" /><div className="mx-2 hidden items-center lg:flex"><div className="h-px w-12 bg-stone-300" /><ArrowRight size={14} className="ml-1 text-stone-400" /></div></> : null}</React.Fragment>); })}</div></section>
           </section>
         ) : null}
 
