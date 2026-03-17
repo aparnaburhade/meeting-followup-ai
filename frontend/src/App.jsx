@@ -165,7 +165,7 @@ function App() {
       let responseData = null;
       let responseError = null;
 
-      const fetchPromise = fetch('http://127.0.0.1:8000/analyze-meeting', {
+      const fetchPromise = fetch(`${import.meta.env.VITE_API_BASE_URL}/analyze-meeting`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ transcript }),
